@@ -1,0 +1,35 @@
+{
+  "name": "svelte-virtual-list-by-tanin",
+  "version": "1.0.0",
+  "description": "A <VirtualList> component for Svelte apps",
+  "main": "src/VirtualList.svelte",
+  "svelte": "src/VirtualList.svelte",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -cw",
+    "prepublishOnly": "npm test",
+    "test": "node test/runner.js",
+    "test:browser": "npm run build && serve test/public",
+    "pretest": "npm run build",
+    "lint": "eslint src/VirtualList.svelte"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "28.0.8",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "rollup": "4.52.5",
+    "rollup-plugin-svelte": "7.2.3",
+    "svelte": "5.41.1"
+  },
+  "repository": "https://github.com/tanin47/svelte-virtual-list-by-tanin",
+  "author": "Tanin Na Nakorn",
+  "license": "LIL",
+  "keywords": [
+    "svelte"
+  ],
+  "files": [
+    "src",
+    "index.mjs",
+    "index.js"
+  ]
+}
