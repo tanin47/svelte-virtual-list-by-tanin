@@ -1,5 +1,5 @@
 <script lang="ts">
-import VirtualList from "../src/VirtualList.svelte";
+import VirtualList, {type Item} from "../src/VirtualList.svelte";
 
 interface Column {
   name: string;
@@ -19,12 +19,15 @@ const columns: Column[] = [
   {name: 'Random number', width: 100}
 ]
 
-const items: string[][] = Array.from({length: 8000}, (_, i) => [
-  `User ${i + 1}`,
-  `Address ${i + 1}, Street ${i + 1}, City ${i + 1}`,
-  `user${i + 1}@email.com`,
-  `${i + 13284098324}`.padStart(10, '0')
-]);
+const items: Item[] = Array.from({length: 8000}, (_, i) => ({
+  rowHeight: getRowHeight(i),
+  values: [
+    `User ${i + 1}`,
+    `Address ${i + 1}, Street ${i + 1}, City ${i + 1}`,
+    `user${i + 1}@email.com`,
+    `${i + 13284098324}`.padStart(10, '0')
+  ]
+}));
 
 let totalWidth: number = columns.reduce((acc, x) => acc + x.width, 0);
 
@@ -65,13 +68,13 @@ function getRowHeight(rowIndex: number) {
         <div style="min-width: {column.width}px;width: {column.width}px;max-width: {column.width}px;" class:sticky-column={index === 0} >{column.name}</div>
       {/each}
     </div>
-    <div class="row" style="height: {getRowHeight(index)}px;">
+    <div class="row" style="height: {item.rowHeight}px;">
       {#each columns as column, colIndex (colIndex)}
         <div style="min-width: {column.width}px;width: {column.width}px;max-width: {column.width}px;" class:number={colIndex === 0} class:sticky-column={colIndex === 0}>
           {#if colIndex === 0}
             {index + 1}
           {:else}
-            {item[colIndex - 1]}
+            {item.values[colIndex - 1]}
           {/if}
         </div>
       {/each}
