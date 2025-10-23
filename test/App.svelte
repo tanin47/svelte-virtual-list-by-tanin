@@ -1,150 +1,47 @@
 <script lang="ts">
-import VirtualList, {type Item} from "../src/VirtualList.svelte";
+import ManyRowOneColumn from './ManyRowOneColumn.svelte';
+import ManyRowManyColumn from './ManyRowManyColumn.svelte';
+import ManyRowManyColumnNoSticky from './ManyRowManyColumnNoSticky.svelte';
+import FewRowManyColumn from './FewRowManyColumn.svelte';
+import NoScrollBoth from "./NoScrollBoth.svelte";
+import NoScrollHorizontal from "./NoScrollHorizontal.svelte";
+import NoScrollVertical from "./NoScrollVertical.svelte";
 
-interface Column {
-  name: string;
-  width: number;
-}
-
-type Row = string[];
-
-let scrollLeft: number = 0;
-let scrollTop: number = 0;
-
-const columns: Column[] = [
-  {name: '#', width: 50},
-  {name: 'Username', width: 100},
-  {name: 'Address', width: 350},
-  {name: 'Email', width: 150},
-  {name: 'Random number', width: 100}
-]
-
-const items: Item[] = Array.from({length: 8000}, (_, i) => ({
-  rowHeight: getRowHeight(i),
-  values: [
-    `User ${i + 1}`,
-    `Address ${i + 1}, Street ${i + 1}, City ${i + 1}`,
-    `user${i + 1}@email.com`,
-    `${i + 13284098324}`.padStart(10, '0')
-  ]
-}));
-
-let totalWidth: number = columns.reduce((acc, x) => acc + x.width, 0);
-
-let start: number = 0;
-let end: number = 0;
-
-function getRowHeight(rowIndex: number) {
-  // Simulate variable heights
-  if ((rowIndex % 10) === 0) {
-    return 27.5 * 2;
-  } else {
-    return 27.5;
-  }
-}
+let tab: '20m' | '1m' | '1m_no_sticky' | 'smalls' = '1m'
 </script>
 
-<div class="container">
-  <div>Show: {start} - {end}</div>
-  <VirtualList
-    let:item
-    let:index
-    bind:start
-    bind:end
-    items={items}
-    initialScrollLeft={scrollLeft}
-    initialScrollTop={scrollTop}
-    getItemHeight={getRowHeight}
-    onBottomReached={() => {
-      console.log("onBottomReached")
-    }}
-    onScrolled={(scrollLeft_, scrollTop_) => {
-      scrollLeft = scrollLeft_;
-      scrollTop = scrollTop_;
-    }}
-  >
-    <div slot="header" class="header" style="min-width: {totalWidth}px;width: {totalWidth}px;max-width: {totalWidth}px;">
-      {#each columns as column, index (index)}
-        <div style="min-width: {column.width}px;width: {column.width}px;max-width: {column.width}px;" class:sticky-column={index === 0} >{column.name}</div>
-      {/each}
-    </div>
-    <div class="row" style="height: {item.rowHeight}px;">
-      {#each columns as column, colIndex (colIndex)}
-        <div style="min-width: {column.width}px;width: {column.width}px;max-width: {column.width}px;" class:number={colIndex === 0} class:sticky-column={colIndex === 0}>
-          {#if colIndex === 0}
-            {index + 1}
-          {:else}
-            {item.values[colIndex - 1]}
-          {/if}
-        </div>
-      {/each}
-    </div>
-  </VirtualList>
+<div class="gallery">
+  <div class="tabs">
+    <button onclick={() => {tab = '1m'}}>View the 1-million-row table</button>
+    <button onclick={() => {tab = '1m_no_sticky'}}>View the 1-million-row tables with no sticky</button>
+    <button onclick={() => {tab = 'smalls'}}>View the small tables</button>
+    <button onclick={() => {tab = '20m'}}>View the 20-million-row table (it may take time to load)</button>
+  </div>
+  {#if tab === '20m'}
+    <ManyRowOneColumn />
+  {:else if tab === '1m'}
+    <ManyRowManyColumn />
+  {:else if tab === '1m_no_sticky'}
+    <ManyRowManyColumnNoSticky />
+  {:else}
+    <FewRowManyColumn />
+    <NoScrollBoth />
+    <NoScrollHorizontal />
+    <NoScrollVertical />
+  {/if}
 </div>
 
 <style>
-  .container {
-    height: 400px;
-    width: 600px;
+  .gallery {
     display: flex;
+    gap: 20px;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: stretch;
-    border: 2px solid #333;
-    position: relative;
-    margin: 10px;
+    align-items: start;
   }
-
-  .header {
-    border-left: 1px #ccc solid;
-    font-size: 16px;
+  .tabs {
     display: flex;
-    align-items: stretch;
-    font-weight: bold;
-    white-space: pre;
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
-
-  .header > div {
-    display: block;
-    box-sizing: border-box;
-    padding: 4px;
-    background: #eee;
-    border-top: 1px #ccc solid;
-    border-right: 1px #ccc solid;
-    border-bottom: 1px #ccc solid;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: pre;
-  }
-
-  .row {
-    font-size: 16px;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    border-left: 1px #ccc solid;
-  }
-
-  .row > div {
-    box-sizing: border-box;
-    padding: 4px;
-    border-right: 1px #ccc solid;
-    border-bottom: 1px #ccc solid;
-    white-space: pre;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .row > div.number {
-    background-color: #eee;
-  }
-
-  .sticky-column {
-    position: sticky;
-    left: 0;
-    z-index: 10;
+    gap: 10px;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 </style>

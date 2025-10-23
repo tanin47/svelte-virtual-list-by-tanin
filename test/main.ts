@@ -1,6 +1,6 @@
-import App from "./App.svelte";
+import ManyRowManyColumn1 from "./App.svelte";
 
-const app = new App({
+const app = new ManyRowManyColumn1({
   target: document.body,
   props: {},
 });
