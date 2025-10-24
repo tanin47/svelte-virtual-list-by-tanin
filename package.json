@@ -1,0 +1,23 @@
+{
+  "name": "svelte-virtual-table",
+  "version": "1.0.0",
+  "description": "A <VirtualTable> component for Svelte apps",
+  "main": "src/VirtualTable.svelte",
+  "svelte": "src/VirtualTable.svelte",
+  "type": "module",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "28.0.8",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "rollup": "4.52.5",
+    "rollup-plugin-svelte": "7.2.3",
+    "svelte": "5.41.1",
+    "svelte-virtual-table": "file:."
+  },
+  "repository": "https://github.com/tanin47/svelte-virtual-table",
+  "author": "Tanin Na Nakorn",
+  "license": "LIL",
+  "keywords": [
+    "svelte"
+  ],
+  "files": ["src"]
+}
