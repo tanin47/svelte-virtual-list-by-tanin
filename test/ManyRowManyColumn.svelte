@@ -1,6 +1,8 @@
 <script lang="ts">
 import VirtualTable, {type Item} from "../src/VirtualTable.svelte";
 
+export let count: number = 1000000
+
 interface Column {
   name: string;
   width: number;
@@ -17,7 +19,7 @@ const columns: Column[] = [
   {name: 'Random number', width: 100}
 ]
 
-const items: Item[] = Array.from({length: 1000000}, (_, i) => ({
+const items: Item[] = Array.from({length: count}, (_, i) => ({
   rowHeight: getRowHeight(i),
   values: [
     `User ${i + 1}`,
