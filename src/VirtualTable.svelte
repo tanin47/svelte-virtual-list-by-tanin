@@ -46,18 +46,11 @@ $: if (viewport) {
   for (let i = 0; i < items.length; i++) {
     cumulativeHeight[i] = items[i].rowHeight + (i > 0 ? cumulativeHeight[i-1] : 0);
   }
-  refresh(items);
+  refresh(items, viewportHeight);
 }
 
-// We don't track viewport's height directly because it can flicker by 1px when its children's dimensions change.
-// We've encountered this anecdotally when the height is high (~16,000,000px)
-export function updateViewportDimension() {
-  refresh(items)
-}
-
-async function refresh(_items: Item[]) {
-  console.log('refresh')
-  handleScroll()
+async function refresh(_items: Item[], _viewportHeight: number) {
+  await handleScroll()
   await tick()
   viewport.scrollTo(initialScrollLeft, initialScrollTop)
 }
@@ -92,10 +85,16 @@ function findItemIndexByTop(top: number) {
 async function handleScroll() {
   if (items.length === 0) { return;}
   let { scrollLeft, scrollTop } = viewport;
-  let scrollableHeight = Math.min(cumulativeHeight[items.length - 1], MAX_SCROLLABLE_AREA)
+  let scrollableHeight = cumulativeHeight[items.length - 1]
   let contentViewHeight = viewportHeight - stickyHeaderHeight;
 
-  let trueTop: number = Math.ceil(cumulativeHeight[items.length - 1] * scrollTop / (scrollableHeight - contentViewHeight));
+  let trueTop: number = scrollTop;
+
+  // In the virtual mode, we need to scale the true top properly.
+  if (cumulativeHeight[items.length - 1] >= MAX_SCROLLABLE_AREA) {
+    scrollableHeight = MAX_SCROLLABLE_AREA;
+    trueTop = Math.ceil(cumulativeHeight[items.length - 1] * scrollTop / (scrollableHeight - contentViewHeight));
+  }
 
   let newStartIndex = findItemIndexByTop(trueTop);
 
@@ -108,7 +107,7 @@ async function handleScroll() {
 
   if (
     newStartIndex === null ||
-    (cumulativeHeight[endIndex] - cumulativeHeight[newStartIndex] + items[newStartIndex].rowHeight) < contentViewHeight
+    (cumulativeHeight[endIndex] - (cumulativeHeight[newStartIndex] - items[newStartIndex].rowHeight)) < contentViewHeight
   ) {
     // Handle over-scrolling by simply showing the last rows according to the contentViewHeight.
     // If this wasn't handled, it would flicker due to an over-scrolled position.
@@ -173,59 +172,59 @@ const hasHeaderSlot = $$slots.header;
     style="height: {Math.min(cumulativeHeight[items.length - 1], MAX_SCROLLABLE_AREA)}px;"
   >
     <div style="position: absolute; top: {contentTop}px; left: 0;">
-    {#each visible as row (row.index)}
-      <div
-        class="virtual-table-row"
-        style="height: {row.item.rowHeight}px; min-height: {row.item.rowHeight}px; max-height: {row.item.rowHeight}px;"
-      >
-        <slot item={row.item} index={row.index}>Missing template</slot>
-      </div>
-    {/each}
+      {#each visible as row (row.index)}
+        <div
+          class="virtual-table-row"
+          style="height: {row.item.rowHeight}px; min-height: {row.item.rowHeight}px; max-height: {row.item.rowHeight}px;"
+        >
+          <slot item={row.item} index={row.index}>Missing template</slot>
+        </div>
+      {/each}
     </div>
     <div bind:this={bottomElement} class="virtual-table-bottom"></div>
   </div>
 </div>
 
 <style>
-  .virtual-table {
-    flex-direction: column;
-    -webkit-overflow-scrolling: touch;
-    align-items: stretch;
-    box-sizing: border-box;
-    flex-grow: 1;
-    font-size: 0;
-    justify-content: stretch;
-    overflow: auto;
-    position: relative;
-  }
+.virtual-table {
+  flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+  align-items: stretch;
+  box-sizing: border-box;
+  flex-grow: 1;
+  font-size: 0;
+  justify-content: stretch;
+  overflow: auto;
+  position: relative;
+}
 
-  .virtual-table-header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
+.virtual-table-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
 
-  .virtual-table-content {
-    position: relative;
-    overflow: visible;
-    -webkit-overflow-scrolling: touch;
-    display: block;
-    font-size: 0;
-  }
+.virtual-table-content {
+  position: relative;
+  overflow: visible;
+  -webkit-overflow-scrolling: touch;
+  display: block;
+  font-size: 0;
+}
 
-  .virtual-table-row {
-    position: relative;
-    box-sizing: border-box;
-    font-size: 0;
-  }
+.virtual-table-row {
+  position: relative;
+  box-sizing: border-box;
+  font-size: 0;
+}
 
-  .virtual-table-bottom {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 10px;
-    min-height: 10px;
-    max-height: 10px;
-  }
+.virtual-table-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 10px;
+  min-height: 10px;
+  max-height: 10px;
+}
 </style>

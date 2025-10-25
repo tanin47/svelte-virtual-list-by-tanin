@@ -1,5 +1,5 @@
 {
-  "name": "svelte-virtual-table",
+  "name": "svelte-virtual-table-by-tanin",
   "version": "1.0.0",
   "description": "A <VirtualTable> component for Svelte apps",
   "main": "src/VirtualTable.svelte",
@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "hmr": "NODE_PATH=./node_modules ENABLE_HMR=true node hmr.cjs",
-    "rollup": "rollup -c",
+    "rollup": "rollup -cw",
     "webpack": "webpack"
   },
   "devDependencies": {
@@ -22,7 +22,7 @@
     "webpack": "5.102.1",
     "webpack-cli": "6.0.1"
   },
-  "repository": "https://github.com/tanin47/svelte-virtual-table",
+  "repository": "https://github.com/tanin47/svelte-virtual-table-by-tanin",
   "author": "Tanin Na Nakorn",
   "license": "LIL",
   "keywords": [
