@@ -156,8 +156,8 @@ Development
 ------------
 
 1. Run `npm install`
-2. Run `./node_modules/.bin/rollup -cw` to build the dev version that will auto-compile changes.
-3. Visit `./test/index.html'
+2. Run `npm run rollup` and visit `./test/index-rollup.html`
+4. Run `npm run webpack` and visit `./test/index-webpack.html` to test webpack.
 
 Test
 -----

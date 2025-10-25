@@ -1,5 +1,5 @@
 <script lang="ts">
-import VirtualTable, {type Item} from "svelte-virtual-table";
+import VirtualTable, {type Item} from "../src/VirtualTable.svelte";
 
 interface Column {
   name: string;

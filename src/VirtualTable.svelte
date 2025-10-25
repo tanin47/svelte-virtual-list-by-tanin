@@ -5,7 +5,7 @@ export interface Item {
 }
 </script>
 <script lang="ts">
-import {onMount} from 'svelte';
+import {onMount, tick} from 'svelte';
 
 export let items: Item[];
 export let initialScrollLeft: number = 0;
@@ -55,10 +55,11 @@ export function updateViewportDimension() {
   refresh(items)
 }
 
-function refresh(_items: Item[]) {
-  viewport.scrollTop = initialScrollTop;
-  viewport.scrollLeft = initialScrollLeft;
+async function refresh(_items: Item[]) {
+  console.log('refresh')
   handleScroll()
+  await tick()
+  viewport.scrollTo(initialScrollLeft, initialScrollTop)
 }
 
 // The binary search is needed. The flickering while scrolling would be noticeable at >1,000,000 items if we were to use
@@ -89,6 +90,7 @@ function findItemIndexByTop(top: number) {
 }
 
 async function handleScroll() {
+  if (items.length === 0) { return;}
   let { scrollLeft, scrollTop } = viewport;
   let scrollableHeight = Math.min(cumulativeHeight[items.length - 1], MAX_SCROLLABLE_AREA)
   let contentViewHeight = viewportHeight - stickyHeaderHeight;
@@ -179,7 +181,51 @@ const hasHeaderSlot = $$slots.header;
         <slot item={row.item} index={row.index}>Missing template</slot>
       </div>
     {/each}
-    <div bind:this={bottomElement} class="virtual-table-bottom"></div>
     </div>
+    <div bind:this={bottomElement} class="virtual-table-bottom"></div>
   </div>
 </div>
+
+<style>
+  .virtual-table {
+    flex-direction: column;
+    -webkit-overflow-scrolling: touch;
+    align-items: stretch;
+    box-sizing: border-box;
+    flex-grow: 1;
+    font-size: 0;
+    justify-content: stretch;
+    overflow: auto;
+    position: relative;
+  }
+
+  .virtual-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .virtual-table-content {
+    position: relative;
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    font-size: 0;
+  }
+
+  .virtual-table-row {
+    position: relative;
+    box-sizing: border-box;
+    font-size: 0;
+  }
+
+  .virtual-table-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 10px;
+    min-height: 10px;
+    max-height: 10px;
+  }
+</style>

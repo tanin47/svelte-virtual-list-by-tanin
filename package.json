@@ -5,13 +5,22 @@
   "main": "src/VirtualTable.svelte",
   "svelte": "src/VirtualTable.svelte",
   "type": "module",
+  "scripts": {
+    "hmr": "NODE_PATH=./node_modules ENABLE_HMR=true node hmr.cjs",
+    "rollup": "rollup -c",
+    "webpack": "webpack"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "28.0.8",
     "@rollup/plugin-node-resolve": "16.0.3",
     "rollup": "4.52.5",
     "rollup-plugin-svelte": "7.2.3",
-    "svelte": "5.41.1",
-    "svelte-virtual-table": "file:."
+    "svelte": "5.41.4",
+    "svelte-loader": "3.2.4",
+    "svelte-preprocess": "6.0.3",
+    "ts-loader": "9.5.4",
+    "webpack": "5.102.1",
+    "webpack-cli": "6.0.1"
   },
   "repository": "https://github.com/tanin47/svelte-virtual-table",
   "author": "Tanin Na Nakorn",
@@ -19,5 +28,9 @@
   "keywords": [
     "svelte"
   ],
-  "files": ["src"]
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+  }
 }
