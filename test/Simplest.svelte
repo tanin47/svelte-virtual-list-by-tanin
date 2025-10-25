@@ -1,5 +1,5 @@
 <script lang="ts">
-import VirtualTable, {type Item} from "svelte-virtual-table";
+import VirtualTable, {type Item} from "../src/VirtualTable.svelte";
 
 let scrollLeft: number = 0;
 let scrollTop: number = 0;

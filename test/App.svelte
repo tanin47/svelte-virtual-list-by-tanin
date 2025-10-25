@@ -8,15 +8,15 @@ import NoScrollHorizontal from "./NoScrollHorizontal.svelte";
 import NoScrollVertical from "./NoScrollVertical.svelte";
 import Simplest from "./Simplest.svelte";
 
-let tab: '20m' | '1m' | '1m_no_sticky' | 'smalls' = '1m'
+let tab: '20m' | '1m' | '1m_no_sticky' | 'smalls' = 'smalls'
 </script>
 
 <div class="gallery">
   <div class="tabs">
-    <button onclick={() => {tab = '1m'}}>View the 1-million-row table</button>
-    <button onclick={() => {tab = '1m_no_sticky'}}>View the 1-million-row tables with no sticky</button>
-    <button onclick={() => {tab = 'smalls'}}>View the small tables</button>
-    <button onclick={() => {tab = '20m'}}>View the 20-million-row table (it may take time to load)</button>
+    <button onclick={() => {tab = 'smalls'}} disabled={tab === 'smalls'}>View the small tables</button>
+    <button onclick={() => {tab = '1m'}} disabled={tab === '1m'}>View the 1-million-row table</button>
+    <button onclick={() => {tab = '1m_no_sticky'}} disabled={tab === '1m_no_sticky'}>View the 1-million-row tables with no sticky</button>
+    <button onclick={() => {tab = '20m'}} disabled={tab === '20m'}>View the 20-million-row table (it may take time to load)</button>
   </div>
   {#if tab === '20m'}
     <ManyRowOneColumn />
