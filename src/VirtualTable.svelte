@@ -57,10 +57,10 @@ async function refresh(_items: Item[], _viewportHeight: number) {
 
 // The binary search is needed. The flickering while scrolling would be noticeable at >1,000,000 items if we were to use
 // a brute-force search.
-function findItemIndexByTop(top: number) {
+function findItemIndexByTop(top: number): number {
   let left = 0;
   let right = items.length - 1;
-  let newStartIndex: number | null = null;
+  let newStartIndex: number = items.length - 1;
 
   while (left <= right) {
     const mid = Math.floor((left + right) / 2);
@@ -93,35 +93,29 @@ async function handleScroll() {
   // In the virtual mode, we need to scale the true top properly.
   if (cumulativeHeight[items.length - 1] >= MAX_SCROLLABLE_AREA) {
     scrollableHeight = MAX_SCROLLABLE_AREA;
-    trueTop = Math.ceil(cumulativeHeight[items.length - 1] * scrollTop / (scrollableHeight - contentViewHeight));
+    trueTop = Math.ceil(cumulativeHeight[items.length - 1] * scrollTop / scrollableHeight);
   }
 
-  let newStartIndex = findItemIndexByTop(trueTop);
-
-  if (newStartIndex !== null) {
-    startIndex = newStartIndex;
-    endIndex = findItemIndexByTop(trueTop + contentViewHeight) || items.length - 1;
-    let deltaTop = trueTop - (cumulativeHeight[newStartIndex] - items[newStartIndex].rowHeight);
-    contentTop = scrollTop - deltaTop;
-  }
+  startIndex = findItemIndexByTop(trueTop);
+  endIndex = findItemIndexByTop(trueTop + contentViewHeight);
+  let deltaTop = trueTop - (cumulativeHeight[startIndex] - items[startIndex].rowHeight);
+  contentTop = scrollTop - deltaTop;
 
   if (
-    newStartIndex === null ||
-    (cumulativeHeight[endIndex] - (cumulativeHeight[newStartIndex] - items[newStartIndex].rowHeight)) < contentViewHeight
+     contentTop + cumulativeHeight[endIndex] - (cumulativeHeight[startIndex] - items[startIndex].rowHeight) >= scrollableHeight
   ) {
     // Handle over-scrolling by simply showing the last rows according to the contentViewHeight.
-    // If this wasn't handled, it would flicker due to an over-scrolled position.
+    // If this wasn't handled, it would flicker because it automatically adjusts back to the max scroll top that isn't overscrolled.
     endIndex = items.length - 1;
-    newStartIndex = endIndex
-    while (newStartIndex > 0) {
-      if ((cumulativeHeight[endIndex] - cumulativeHeight[newStartIndex] + items[newStartIndex].rowHeight) < contentViewHeight) {
-        newStartIndex--;
+    startIndex = endIndex
+    while (startIndex > 0) {
+      if ((cumulativeHeight[endIndex] - cumulativeHeight[startIndex] + items[startIndex].rowHeight) < contentViewHeight) {
+        startIndex--;
       } else {
         break
       }
     }
 
-    startIndex = newStartIndex;
     trueTop = cumulativeHeight[startIndex] - items[startIndex].rowHeight
     let deltaTop = (cumulativeHeight[endIndex] - cumulativeHeight[startIndex] + items[startIndex].rowHeight) - contentViewHeight
     contentTop = scrollableHeight - contentViewHeight - deltaTop;
