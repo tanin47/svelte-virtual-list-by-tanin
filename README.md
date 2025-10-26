@@ -7,6 +7,7 @@ through millions of rows without any perf issue.
 This is possibly the only virtual list that can handle the scrollable height larger than 16,777,200 pixels, which is
 the Google Chrome's limit for a div's height and padding. Other virtual lists would break down due to this limit. 16M 
 in pixels isn't as high as we think. 1,000,000 rows whose row height is 20px (~1 line) is already 20,000,000px in height. 
+Read more: [Virtual List: Overcoming the 16,777,200px Limitation of Chrome](https://tanin.nanakorn.com/virtual-list-overcoming-the-16-777-200px-limitation-of-chrome/)
 
 Here are the improvements:
 
@@ -25,7 +26,7 @@ The caveats:
 
 The test page generates 20,000,000 rows with a single column. The scrolling is smooth on Mac M4.
 
-This package is inspired by https://github.com/sveltejs/svelte-virtual-list (@sveltejs/svelte-virtual-list). It was
+This library is based on https://github.com/sveltejs/svelte-virtual-list (@sveltejs/svelte-virtual-list). It was
 initially built for [Backdoor](https://github.com/tanin47/backdoor), A Postgres Data Querying and Editing Tool that you can embed into your JVM app.
 
 Installation
@@ -161,7 +162,6 @@ Development
 
 1. Run `npm install`
 2. Run `npm run rollup` and visit `./test/index-rollup.html`
-4. Run `npm run webpack` and visit `./test/index-webpack.html` to test webpack.
 
 Test
 -----

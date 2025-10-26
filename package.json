@@ -1,6 +1,6 @@
 {
   "name": "svelte-virtual-table-by-tanin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A <VirtualTable> component for Svelte apps",
   "main": "src/VirtualTable.svelte",
   "svelte": "src/VirtualTable.svelte",
