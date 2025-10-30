@@ -1,4 +1,4 @@
-Svelte Virtual Table
+Svelte Virtual Table ([Demo](https://svelte.dev/playground/9b01cb91edf14ef58b902401ff3bdc16?version=5.42.2))
 =======================
 
 A virtual table component for Svelte. It only renders the data that is visible on screen. This means you can scroll
